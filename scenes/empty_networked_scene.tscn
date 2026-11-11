@@ -1,0 +1,143 @@
+[gd_scene format=3 uid="uid://cakutcx15olce"]
+
+[ext_resource type="Script" uid="uid://bl8ttf76cd0pe" path="res://scenes/client.gd" id="1_if31l"]
+[ext_resource type="Script" uid="uid://ca7f8ru1mg8ey" path="res://scenes/disconnect_button.gd" id="2_glj6n"]
+[ext_resource type="Script" uid="uid://i6tc4c63dni3" path="res://scenes/chat.gd" id="3_eymrl"]
+[ext_resource type="Script" uid="uid://b4toqjl1ct5yc" path="res://scenes/server.gd" id="5_u22es"]
+
+[node name="World" type="Node" unique_id=682056448]
+
+[node name="Client" type="Node" parent="." unique_id=171699482]
+script = ExtResource("1_if31l")
+
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="Client" unique_id=1382076172]
+_spawnable_scenes = PackedStringArray("uid://d18s3cdq05uem")
+spawn_path = NodePath("../Players")
+
+[node name="Players" type="Node2D" parent="Client" unique_id=2054653469]
+
+[node name="EscapeMenu" type="Label" parent="Client" unique_id=867725792]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 7
+text = "Press escape to return to game"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DisonnectButton" type="Button" parent="Client/EscapeMenu" unique_id=1853032082]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -62.5
+offset_top = 20.0
+offset_right = 62.5
+offset_bottom = 51.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Disconnect"
+script = ExtResource("2_glj6n")
+
+[node name="AwaitingServerMenu" type="Control" parent="Client" unique_id=1373481182]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Client/AwaitingServerMenu" unique_id=218088075]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -135.0
+offset_top = -33.0
+offset_right = 135.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Waiting for the server to respond..."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="Client/AwaitingServerMenu" unique_id=1386819441]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -62.5
+offset_top = 3.0
+offset_right = 62.5
+offset_bottom = 34.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Back"
+script = ExtResource("2_glj6n")
+
+[node name="Chat" type="ColorRect" parent="Client" unique_id=1031297631]
+visible = false
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -149.0
+offset_right = 343.0
+grow_vertical = 0
+color = Color(0, 0, 0, 0.39215687)
+script = ExtResource("3_eymrl")
+
+[node name="ChatEntry" type="LineEdit" parent="Client/Chat" unique_id=1569949443]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -31.0
+offset_right = 343.0
+grow_vertical = 0
+placeholder_text = "Chat here..."
+max_length = 80
+keep_editing_on_text_submit = true
+caret_blink = true
+
+[node name="ChatMessages" type="RichTextLabel" parent="Client/Chat" unique_id=1857416606]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 6.0
+offset_right = -5.0
+offset_bottom = 116.0
+grow_horizontal = 2
+bbcode_enabled = true
+text = "[color=yellow]Welcome to the server![/color]"
+scroll_following = true
+vertical_alignment = 2
+
+[node name="Camera2D" type="Camera2D" parent="Client" unique_id=521663002]
+
+[node name="Server" type="Node" parent="." unique_id=1960978760]
+script = ExtResource("5_u22es")
+
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="Server" unique_id=1595159971]
+_spawnable_scenes = PackedStringArray("uid://d18s3cdq05uem")
+spawn_path = NodePath("../Players")
+
+[node name="Players" type="Node2D" parent="Server" unique_id=1993736063]
+
+[node name="Chat" type="Node" parent="Server" unique_id=201479053]
+script = ExtResource("3_eymrl")
