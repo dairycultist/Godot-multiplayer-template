@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cakutcx15olce"]
 
 [ext_resource type="Script" uid="uid://bl8ttf76cd0pe" path="res://scenes/client.gd" id="1_if31l"]
-[ext_resource type="Script" uid="uid://ca7f8ru1mg8ey" path="res://scenes/disconnect_button.gd" id="2_glj6n"]
+[ext_resource type="Script" uid="uid://ca7f8ru1mg8ey" path="res://disconnect_button.gd" id="2_glj6n"]
 [ext_resource type="Script" uid="uid://i6tc4c63dni3" path="res://scenes/chat.gd" id="3_eymrl"]
 [ext_resource type="Script" uid="uid://b4toqjl1ct5yc" path="res://scenes/server.gd" id="5_u22es"]
 
@@ -16,11 +16,22 @@ spawn_path = NodePath("../Players")
 
 [node name="Players" type="Node2D" parent="Client" unique_id=2054653469]
 
-[node name="EscapeMenu" type="Label" parent="Client" unique_id=867725792]
+[node name="EscapeMenu" type="Control" parent="Client" unique_id=1026041272]
 visible = false
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+layout_mode = 3
+anchors_preset = 0
+
+[node name="Label" type="Label" parent="Client/EscapeMenu" unique_id=867725792]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = -33.0
+offset_right = 121.0
+offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/outline_size = 7
@@ -35,10 +46,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -62.5
-offset_top = 20.0
-offset_right = 62.5
-offset_bottom = 51.0
+offset_left = -62.0
+offset_top = 3.0
+offset_right = 63.0
+offset_bottom = 34.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Disconnect"
@@ -51,10 +62,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = -576.0
+offset_top = -324.0
+offset_right = -576.0
+offset_bottom = -324.0
 grow_horizontal = 2
 grow_vertical = 2
 
