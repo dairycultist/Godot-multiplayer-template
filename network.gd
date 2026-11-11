@@ -11,8 +11,8 @@ extends Node
 # and "Network.client_node".
 # For example, "Network.client_node.local_username"
 
-var server := ENetMultiplayerPeer.new()
-var client := ENetMultiplayerPeer.new()
+var _server := ENetMultiplayerPeer.new()
+var _client := ENetMultiplayerPeer.new()
 
 var server_node: Server
 var client_node: Client
@@ -20,16 +20,16 @@ var client_node: Client
 func host_server(username: String, port: int) -> Error:
 
 	# create a local server
-	var result := server.create_server(port, 8)
+	var result := _server.create_server(port, 8)
 	
 	if result != Error.OK:
 		return result
 	
 	# create a client to connect to the local server
-	result = client.create_client("127.0.0.1", port)
+	result = _client.create_client("127.0.0.1", port)
 	
 	if result != Error.OK:
-		server.close()
+		_server.close()
 		return result
 	
 	# load the scene, waiting for both its children to enter the
@@ -51,7 +51,7 @@ func host_server(username: String, port: int) -> Error:
 func join_server(username: String, address: String, port: int) -> Error:
 	
 	# create a client to connect to the remote server
-	var result := client.create_client(address, port)
+	var result := _client.create_client(address, port)
 	
 	if result != Error.OK:
 		return result
@@ -79,8 +79,8 @@ func leave_server(reason: String = "") -> void:
 	get_tree().change_scene_to_file("res://scenes/title.tscn")
 	await get_tree().scene_changed
 	
-	client.close()
-	server.close()
+	_client.close()
+	_server.close()
 	
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	get_tree().current_scene.get_node("DisconnectReasonLabel").text = reason
@@ -90,7 +90,7 @@ func _set_up_server_node():
 	# set up a multiplayer API for the server node and its descendents
 	# (must set it before its descendents have a chance to run _ready)
 	var api := SceneMultiplayer.new()
-	api.multiplayer_peer = Network.server
+	api.multiplayer_peer = _server
 	
 	api.peer_connected.connect(server_node._on_peer_connected)
 	api.peer_disconnected.connect(server_node._on_peer_disconnected)
@@ -104,7 +104,7 @@ func _set_up_client_node(username: String):
 	# set up a multiplayer API for the client node and its descendents
 	# (must set it before its descendents have a chance to run _ready)
 	var api := SceneMultiplayer.new()
-	api.multiplayer_peer = client
+	api.multiplayer_peer = _client
 	
 	api.peer_connected.connect(client_node._on_peer_connected)
 	api.peer_disconnected.connect(client_node._on_peer_disconnected)
