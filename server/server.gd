@@ -1,6 +1,12 @@
 extends Node
 class_name Server
 
+func _enter_tree() -> void:
+	Network.connect_to_server_signal(
+		_on_peer_connected,
+		_on_peer_disconnected
+	)
+
 func _on_peer_connected(_id: int):
 	pass
 

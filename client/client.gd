@@ -8,6 +8,15 @@ var _connected := false
 var local_username: String
 var id_to_username: Dictionary[int, String]
 
+func _enter_tree() -> void:
+	Network.connect_to_client_signal(
+		_on_peer_connected,
+		_on_peer_disconnected,
+		_on_connected_to_server,
+		_on_connection_failed,
+		_on_server_disconnected
+	)
+
 func _ready() -> void:
 	
 	if multiplayer.is_server():
