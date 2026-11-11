@@ -14,6 +14,8 @@ var client := ENetMultiplayerPeer.new()
 # serverside this is the host client's username
 var local_username: String
 
+var id_to_username: Dictionary[int, String]
+
 func host_server(username: String, port: int) -> Error:
 
 	# create a local server
@@ -63,5 +65,6 @@ func leave_server(reason: String = "") -> void:
 	
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	local_username = ""
+	id_to_username.clear()
 	
 	get_tree().current_scene.get_node("DisconnectReasonLabel").text = reason

@@ -10,10 +10,6 @@
 [node name="Client" type="Node" parent="." unique_id=171699482]
 script = ExtResource("1_if31l")
 
-[node name="PlayerSpawner" type="MultiplayerSpawner" parent="Client" unique_id=1382076172]
-_spawnable_scenes = PackedStringArray("uid://d18s3cdq05uem")
-spawn_path = NodePath("../Players")
-
 [node name="Players" type="Node2D" parent="Client" unique_id=2054653469]
 
 [node name="EscapeMenu" type="Control" parent="Client" unique_id=1026041272]
@@ -102,8 +98,11 @@ grow_vertical = 2
 text = "Back"
 script = ExtResource("2_glj6n")
 
-[node name="Chat" type="ColorRect" parent="Client" unique_id=1031297631]
-visible = false
+[node name="Camera2D" type="Camera2D" parent="Client" unique_id=521663002]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="Client" unique_id=1304740439]
+
+[node name="Chat" type="ColorRect" parent="Client/CanvasLayer" unique_id=1031297631]
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -113,7 +112,7 @@ grow_vertical = 0
 color = Color(0, 0, 0, 0.39215687)
 script = ExtResource("3_eymrl")
 
-[node name="ChatEntry" type="LineEdit" parent="Client/Chat" unique_id=1569949443]
+[node name="ChatEntry" type="LineEdit" parent="Client/CanvasLayer/Chat" unique_id=1569949443]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -126,7 +125,7 @@ max_length = 80
 keep_editing_on_text_submit = true
 caret_blink = true
 
-[node name="ChatMessages" type="RichTextLabel" parent="Client/Chat" unique_id=1857416606]
+[node name="ChatMessages" type="RichTextLabel" parent="Client/CanvasLayer/Chat" unique_id=1857416606]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -139,16 +138,12 @@ text = "[color=yellow]Welcome to the server![/color]"
 scroll_following = true
 vertical_alignment = 2
 
-[node name="Camera2D" type="Camera2D" parent="Client" unique_id=521663002]
-
 [node name="Server" type="Node" parent="." unique_id=1960978760]
 script = ExtResource("5_u22es")
 
-[node name="PlayerSpawner" type="MultiplayerSpawner" parent="Server" unique_id=1595159971]
-_spawnable_scenes = PackedStringArray("uid://d18s3cdq05uem")
-spawn_path = NodePath("../Players")
-
 [node name="Players" type="Node2D" parent="Server" unique_id=1993736063]
 
-[node name="Chat" type="Node" parent="Server" unique_id=201479053]
+[node name="CanvasLayer" type="Node" parent="Server" unique_id=1637578053]
+
+[node name="Chat" type="Node" parent="Server/CanvasLayer" unique_id=201479053]
 script = ExtResource("3_eymrl")

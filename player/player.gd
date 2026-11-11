@@ -2,10 +2,11 @@ extends CharacterBody2D
 
 var is_local: bool
 
+# automatically populated when player is instanced
+var player_id: int
+var player_username: String
+
 func _enter_tree() -> void:
-	
-	# identify who this player belongs to
-	var player_id := name.substr("Player".length()).to_int()
 	
 	# give the correct player authority
 	set_multiplayer_authority(player_id)
@@ -18,11 +19,10 @@ func _enter_tree() -> void:
 		collision_mask = 0
 		return
 	
+	$Username.text = player_username
+	
 	# identify if this is the local player
 	is_local = player_id == multiplayer.get_unique_id()
-	
-	if is_local:
-		$Username.text = Network.local_username
 
 func _physics_process(_delta: float) -> void:
 	

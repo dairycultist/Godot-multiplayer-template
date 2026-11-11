@@ -19,16 +19,14 @@ func _enter_tree() -> void:
 	# their _ready functions
 	get_tree().set_multiplayer(api, get_path())
 
-func _on_peer_connected(id: int):
-	
-	# spawn the player
-	var player = load("res://player/player.tscn").instantiate()
-	
-	player.name = "Player" + str(id)
-	
-	$Players.add_child(player, true)
+@rpc("any_peer", "call_local", "reliable", 0)
+func spawn_player(_id: int, _username: String):
+	pass # need to consume the spawn_player that clients send to other clients
+
+func _on_peer_connected(_id: int):
+	pass
 
 func _on_peer_disconnected(id: int):
 	
-	# despawn the player
+	# despawn their player locally
 	$Players.get_node("Player" + str(id)).queue_free()

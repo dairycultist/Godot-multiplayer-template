@@ -28,25 +28,45 @@ func _process(_delta: float) -> void:
 		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 			$EscapeMenu.visible = false
-			$Chat/ChatEntry.release_focus()
+			$CanvasLayer/Chat/ChatEntry.release_focus()
 		else:
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 			$EscapeMenu.visible = true
-			$Chat/ChatEntry.grab_focus()
+			$CanvasLayer/Chat/ChatEntry.grab_focus()
+
+@rpc("any_peer", "call_local", "reliable", 0)
+func spawn_player(id: int, username: String):
+	
+	var player = load("res://player/player.tscn").instantiate()
+	player.name = "Player" + str(id)
+	player.player_id = id
+	player.player_username = username
+	$Players.add_child(player, true)
 
 func _on_peer_connected(id: int):
 	
 	# send our username to the newly connected user
-	$Chat.register_id_to_username.rpc_id(id, multiplayer.get_unique_id(), Network.local_username)
+	$CanvasLayer/Chat.register_id_to_username.rpc_id(id, multiplayer.get_unique_id(), Network.local_username)
+	
+	# tell them to spawn our player locally
+	spawn_player.rpc_id(id, multiplayer.get_unique_id(), Network.local_username)
 
 func _on_peer_disconnected(id: int):
-	$Chat.deregister_id(id)
+	
+	# forget their username
+	$CanvasLayer/Chat.deregister_id(id)
+	
+	# despawn their player locally
+	$Players.get_node("Player" + str(id)).queue_free()
 
 func _on_connected_to_server():
 	_connected = true
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	$Chat.visible = true
+	$CanvasLayer/Chat.visible = true
 	$AwaitingServerMenu.queue_free()
+	
+	# spawn our player locally
+	spawn_player(multiplayer.get_unique_id(), Network.local_username)
 
 func _on_connection_failed():
 	Network.leave_server("Server did not respond.")

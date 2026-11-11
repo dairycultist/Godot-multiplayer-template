@@ -1,7 +1,5 @@
 extends Node
 
-var id_to_username: Dictionary[int, String]
-
 func _ready() -> void:
 	
 	if multiplayer.is_server():
@@ -9,7 +7,7 @@ func _ready() -> void:
 	
 	$ChatEntry.text_submitted.connect(func(new_text: String):
 		
-		send_message.rpc(new_text, get_parent().username)
+		send_message.rpc(new_text, Network.local_username)
 		
 		$ChatEntry.text = ""
 	)
@@ -21,12 +19,12 @@ func register_id_to_username(id: int, username: String):
 		return # the server needs a node to consume the RPC
 	
 	send_message(username + " joined")
-	id_to_username.set(id, username)
+	Network.id_to_username.set(id, username)
 
 func deregister_id(id: int):
 	
-	send_message(id_to_username.get(id) + " left")
-	id_to_username.erase(id)
+	send_message(Network.id_to_username.get(id) + " left")
+	Network.id_to_username.erase(id)
 
 @rpc("any_peer", "call_local", "reliable", 0)
 func send_message(msg: String, username: String = ""):
@@ -35,6 +33,6 @@ func send_message(msg: String, username: String = ""):
 		return # the server needs a node to consume the RPC
 	
 	if username:
-		$ChatMessages.text += "\n[color=gray][" + username + "][/color] " + msg
+		$ChatMessages.text += "\n[color=gray]<" + username + ">[/color] " + msg
 	else:
 		$ChatMessages.text += "\n[color=yellow]" + msg + "[/color]"
