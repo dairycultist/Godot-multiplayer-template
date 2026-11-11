@@ -73,6 +73,9 @@ func join_server(username: String, address: String, port: int) -> Error:
 
 func leave_server(reason: String = "") -> void:
 	
+	server_node = null
+	client_node = null
+	
 	get_tree().change_scene_to_file("res://scenes/title.tscn")
 	await get_tree().scene_changed
 	
@@ -80,29 +83,26 @@ func leave_server(reason: String = "") -> void:
 	server.close()
 	
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-
-	server_node = null
-	client_node = null
-	
 	get_tree().current_scene.get_node("DisconnectReasonLabel").text = reason
 
 func _set_up_server_node():
 	
+	# set up a multiplayer API for the server node and its descendents
+	# (must set it before its descendents have a chance to run _ready)
 	var api := SceneMultiplayer.new()
 	api.multiplayer_peer = Network.server
 	
 	api.peer_connected.connect(server_node._on_peer_connected)
 	api.peer_disconnected.connect(server_node._on_peer_disconnected)
 	
-	# use this multiplayer API for the server node and its descendants
-	# this has to happen before its descendants have a chance to run
-	# their _ready functions
 	server_node.get_tree().set_multiplayer(api, server_node.get_path())
 
 func _set_up_client_node(username: String):
 	
 	client_node.local_username = username
 	
+	# set up a multiplayer API for the client node and its descendents
+	# (must set it before its descendents have a chance to run _ready)
 	var api := SceneMultiplayer.new()
 	api.multiplayer_peer = client
 	
@@ -112,7 +112,4 @@ func _set_up_client_node(username: String):
 	api.connection_failed.connect(client_node._on_connection_failed)
 	api.server_disconnected.connect(client_node._on_server_disconnected)
 	
-	# use this multiplayer API for the client node and its descendants
-	# this has to happen before its descendants have a chance to run
-	# their _ready functions
 	client_node.get_tree().set_multiplayer(api, client_node.get_path())
