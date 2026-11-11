@@ -10,6 +10,8 @@
 [node name="Client" type="Node" parent="." unique_id=171699482]
 script = ExtResource("1_if31l")
 
+[node name="Camera2D" type="Camera2D" parent="Client" unique_id=521663002]
+
 [node name="Players" type="Node2D" parent="Client" unique_id=2054653469]
 
 [node name="EscapeMenu" type="Control" parent="Client" unique_id=1026041272]
@@ -97,8 +99,6 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Back"
 script = ExtResource("2_glj6n")
-
-[node name="Camera2D" type="Camera2D" parent="Client" unique_id=521663002]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="Client" unique_id=1304740439]
 
