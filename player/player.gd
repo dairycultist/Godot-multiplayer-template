@@ -22,8 +22,7 @@ func _enter_tree() -> void:
 	is_local = player_id == multiplayer.get_unique_id()
 	
 	if is_local:
-		# get our username from the parent's parent, which is the Client node
-		$Username.text = get_parent().get_parent().username
+		$Username.text = Network.local_username
 
 func _physics_process(_delta: float) -> void:
 	

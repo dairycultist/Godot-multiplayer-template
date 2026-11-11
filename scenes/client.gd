@@ -1,7 +1,6 @@
 extends Node
 class_name Client
 
-var username: String
 var _connected := false
 
 func _enter_tree() -> void:
@@ -38,7 +37,7 @@ func _process(_delta: float) -> void:
 func _on_peer_connected(id: int):
 	
 	# send our username to the newly connected user
-	$Chat.register_id_to_username.rpc_id(id, multiplayer.get_unique_id(), username)
+	$Chat.register_id_to_username.rpc_id(id, multiplayer.get_unique_id(), Network.local_username)
 
 func _on_peer_disconnected(id: int):
 	$Chat.deregister_id(id)
