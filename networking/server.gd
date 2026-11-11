@@ -19,10 +19,6 @@ func _enter_tree() -> void:
 	# their _ready functions
 	get_tree().set_multiplayer(api, get_path())
 
-@rpc("any_peer", "call_local", "reliable", 0)
-func spawn_player(_id: int, _username: String):
-	pass # need to consume the spawn_player that clients send to other clients
-
 func _on_peer_connected(_id: int):
 	pass
 
@@ -30,3 +26,12 @@ func _on_peer_disconnected(id: int):
 	
 	# despawn their player locally
 	$Players.get_node("Player" + str(id)).queue_free()
+
+# need to consume RPCs clients send between each other even if we do nothing with them
+@rpc("any_peer", "call_local", "reliable", 0)
+func send_message(_msg: String, _is_system_msg: bool):
+	pass
+
+@rpc("any_peer", "call_local", "reliable", 0)
+func spawn_player(_id: int, _username: String):
+	pass

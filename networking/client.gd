@@ -6,6 +6,33 @@ var _connected := false
 var local_username: String
 var id_to_username: Dictionary[int, String]
 
+func _ready() -> void:
+	
+	if multiplayer.is_server():
+		return
+	
+	$CanvasLayer/Chat/ChatEntry.text_submitted.connect(
+		func(text: String):
+			
+			text = text.strip_edges()
+			
+			if text.length() != 0:
+				send_message.rpc(text, false)
+				$CanvasLayer/Chat/ChatEntry.text = ""
+	)
+
+@rpc("any_peer", "call_local", "reliable", 0)
+func send_message(msg: String, is_system_msg: bool):
+	
+	if multiplayer.is_server():
+		return # the server needs a node to consume the RPC
+	
+	if is_system_msg:
+		$CanvasLayer/Chat/ChatMessages.text += "\n[color=yellow]" + msg + "[/color]"
+	else:
+		var sender_username = Network.client_node.id_to_username[multiplayer.get_remote_sender_id()]
+		$CanvasLayer/Chat/ChatMessages.text += "\n[color=gray]<" + sender_username + ">[/color] " + msg
+
 func _enter_tree() -> void:
 	
 	var api := SceneMultiplayer.new()
@@ -49,7 +76,7 @@ func spawn_player(id: int, username: String):
 	
 	# remember their username
 	if id != multiplayer.get_unique_id():
-		$CanvasLayer/Chat.send_message(username + " joined", true)
+		send_message(username + " joined", true)
 	id_to_username.set(id, username)
 
 func _on_peer_connected(id: int):
@@ -60,7 +87,7 @@ func _on_peer_connected(id: int):
 func _on_peer_disconnected(id: int):
 	
 	# forget their username
-	$CanvasLayer/Chat.send_message(id_to_username.get(id) + " left", true)
+	send_message(id_to_username.get(id) + " left", true)
 	id_to_username.erase(id)
 	
 	# despawn their player locally

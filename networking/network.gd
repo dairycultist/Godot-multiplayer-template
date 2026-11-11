@@ -33,7 +33,7 @@ func host_server(username: String, port: int) -> Error:
 		return result
 	
 	# load the scene
-	get_tree().change_scene_to_file("res://scenes/empty_networked_scene.tscn")
+	get_tree().change_scene_to_file("res://scenes/networked.tscn")
 	await get_tree().scene_changed
 	
 	server_node = get_tree().current_scene.get_node("Server")
@@ -52,7 +52,7 @@ func join_server(username: String, address: String, port: int) -> Error:
 		return result
 	
 	# load the scene
-	get_tree().change_scene_to_file("res://scenes/empty_networked_scene.tscn")
+	get_tree().change_scene_to_file("res://scenes/networked.tscn")
 	await get_tree().scene_changed
 	
 	get_tree().current_scene.get_node("Server").queue_free()
