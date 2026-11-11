@@ -1,11 +1,15 @@
 extends Node
 
 # This script provides helpers for hosting, joining, and leaving a server.
-# DON'T use this to get information about the network; use the local
-# "multiplayer" property instead (because the host has both the server and
-# the client, and this property tells you which one a given node is).
 
-# The server and client code focus on game logic.
+# To get information about the network connection, use the "multiplayer"
+# property local to a given node (since one Network can have both a client
+# and server with different network connection properties).
+# For example, "multiplayer.is_server()" and "multiplayer.get_unique_id()"
+
+# To get information about the network game logic, use "Network.server_node"
+# and "Network.client_node".
+# For example, "Network.client_node.local_username"
 
 var server := ENetMultiplayerPeer.new()
 var client := ENetMultiplayerPeer.new()
