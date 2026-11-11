@@ -34,11 +34,16 @@ func host_server(username: String, port: int) -> Error:
 	
 	# load the scene
 	get_tree().change_scene_to_file("res://scenes/networked.tscn")
-	await get_tree().scene_changed
+	
+	await get_tree().root.child_entered_tree
+	await get_tree().current_scene.child_entered_tree
+	await get_tree().current_scene.child_entered_tree
 	
 	server_node = get_tree().current_scene.get_node("Server")
 	client_node = get_tree().current_scene.get_node("Client")
 	
+	_set_up_server_node(server_node)
+	_set_up_client_node(client_node)
 	client_node.local_username = username
 	
 	return Error.OK
@@ -53,11 +58,14 @@ func join_server(username: String, address: String, port: int) -> Error:
 	
 	# load the scene
 	get_tree().change_scene_to_file("res://scenes/networked.tscn")
-	await get_tree().scene_changed
+	
+	await get_tree().root.child_entered_tree
+	await get_tree().current_scene.child_entered_tree
 	
 	get_tree().current_scene.get_node("Server").queue_free()
 	client_node = get_tree().current_scene.get_node("Client")
 	
+	_set_up_client_node(client_node)
 	client_node.local_username = username
 	
 	return Error.OK
@@ -76,3 +84,32 @@ func leave_server(reason: String = "") -> void:
 	client_node = null
 	
 	get_tree().current_scene.get_node("DisconnectReasonLabel").text = reason
+
+func _set_up_client_node(THENODEOMG: Client):
+	
+	var api := SceneMultiplayer.new()
+	api.multiplayer_peer = client
+	
+	api.peer_connected.connect(THENODEOMG._on_peer_connected)
+	api.peer_disconnected.connect(THENODEOMG._on_peer_disconnected)
+	api.connected_to_server.connect(THENODEOMG._on_connected_to_server)
+	api.connection_failed.connect(THENODEOMG._on_connection_failed)
+	api.server_disconnected.connect(THENODEOMG._on_server_disconnected)
+	
+	# use the new multiplayer API for this node and its descendants
+	# this has to happen before its descendants have a chance to run
+	# their _ready functions
+	THENODEOMG.get_tree().set_multiplayer(api, THENODEOMG.get_path())
+
+func _set_up_server_node(THENODEOMG: Server):
+	
+	var api := SceneMultiplayer.new()
+	api.multiplayer_peer = Network.server
+	
+	api.peer_connected.connect(THENODEOMG._on_peer_connected)
+	api.peer_disconnected.connect(THENODEOMG._on_peer_disconnected)
+	
+	# use the new multiplayer API for this node and its descendants
+	# this has to happen before its descendants have a chance to run
+	# their _ready functions
+	THENODEOMG.get_tree().set_multiplayer(api, THENODEOMG.get_path())

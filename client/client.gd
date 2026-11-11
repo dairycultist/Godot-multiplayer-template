@@ -23,31 +23,6 @@ func _ready() -> void:
 				$CanvasLayer/Chat/ChatEntry.text = ""
 	)
 
-@rpc("any_peer", "call_local", "reliable", 0)
-func send_message(msg: String, is_system_msg: bool):
-	
-	if is_system_msg:
-		$CanvasLayer/Chat/ChatMessages.text += "\n[color=yellow]" + msg + "[/color]"
-	else:
-		var sender_username = Network.client_node.id_to_username[multiplayer.get_remote_sender_id()]
-		$CanvasLayer/Chat/ChatMessages.text += "\n[color=gray]<" + sender_username + ">[/color] " + msg
-
-func _enter_tree() -> void:
-	
-	var api := SceneMultiplayer.new()
-	api.multiplayer_peer = Network.client
-	
-	api.peer_connected.connect(_on_peer_connected)
-	api.peer_disconnected.connect(_on_peer_disconnected)
-	api.connected_to_server.connect(_on_connected_to_server)
-	api.connection_failed.connect(_on_connection_failed)
-	api.server_disconnected.connect(_on_server_disconnected)
-	
-	# use the new multiplayer API for this node and its descendants
-	# this has to happen before its descendants have a chance to run
-	# their _ready functions
-	get_tree().set_multiplayer(api, get_path())
-
 func _process(_delta: float) -> void:
 	
 	if not _connected:
@@ -62,6 +37,15 @@ func _process(_delta: float) -> void:
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 			$EscapeMenu.visible = true
 			$CanvasLayer/Chat/ChatEntry.grab_focus()
+
+@rpc("any_peer", "call_local", "reliable", 0)
+func send_message(msg: String, is_system_msg: bool):
+	
+	if is_system_msg:
+		$CanvasLayer/Chat/ChatMessages.text += "\n[color=yellow]" + msg + "[/color]"
+	else:
+		var sender_username = Network.client_node.id_to_username[multiplayer.get_remote_sender_id()]
+		$CanvasLayer/Chat/ChatMessages.text += "\n[color=gray]<" + sender_username + ">[/color] " + msg
 
 @rpc("any_peer", "call_local", "reliable", 0)
 func spawn_player(username: String):
