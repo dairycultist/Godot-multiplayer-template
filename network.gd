@@ -10,11 +10,8 @@ extends Node
 var server := ENetMultiplayerPeer.new()
 var client := ENetMultiplayerPeer.new()
 
-# clientside this is the local client's username
-# serverside this is the host client's username
-var local_username: String
-
-var id_to_username: Dictionary[int, String]
+var server_node: Server
+var client_node: Client
 
 func host_server(username: String, port: int) -> Error:
 
@@ -35,7 +32,10 @@ func host_server(username: String, port: int) -> Error:
 	get_tree().change_scene_to_file("res://scenes/empty_networked_scene.tscn")
 	await get_tree().scene_changed
 	
-	local_username = username
+	server_node = get_tree().current_scene.get_node("Server")
+	client_node = get_tree().current_scene.get_node("Client")
+	
+	client_node.local_username = username
 	
 	return Error.OK
 
@@ -51,7 +51,10 @@ func join_server(username: String, address: String, port: int) -> Error:
 	get_tree().change_scene_to_file("res://scenes/empty_networked_scene.tscn")
 	await get_tree().scene_changed
 	
-	local_username = username
+	get_tree().current_scene.get_node("Server").queue_free()
+	client_node = get_tree().current_scene.get_node("Client")
+	
+	client_node.local_username = username
 	
 	return Error.OK
 
@@ -64,7 +67,8 @@ func leave_server(reason: String = "") -> void:
 	server.close()
 	
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	local_username = ""
-	id_to_username.clear()
+
+	server_node = null
+	client_node = null
 	
 	get_tree().current_scene.get_node("DisconnectReasonLabel").text = reason

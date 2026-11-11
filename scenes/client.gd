@@ -3,6 +3,9 @@ class_name Client
 
 var _connected := false
 
+var local_username: String
+var id_to_username: Dictionary[int, String]
+
 func _enter_tree() -> void:
 	
 	var api := SceneMultiplayer.new()
@@ -37,24 +40,28 @@ func _process(_delta: float) -> void:
 @rpc("any_peer", "call_local", "reliable", 0)
 func spawn_player(id: int, username: String):
 	
+	# spawn player
 	var player = load("res://player/player.tscn").instantiate()
 	player.name = "Player" + str(id)
 	player.player_id = id
 	player.player_username = username
 	$Players.add_child(player, true)
+	
+	# remember their username
+	if id != multiplayer.get_unique_id():
+		$CanvasLayer/Chat.send_message(username + " joined", true)
+	id_to_username.set(id, username)
 
 func _on_peer_connected(id: int):
 	
-	# send our username to the newly connected user
-	$CanvasLayer/Chat.register_id_to_username.rpc_id(id, multiplayer.get_unique_id(), Network.local_username)
-	
-	# tell them to spawn our player locally
-	spawn_player.rpc_id(id, multiplayer.get_unique_id(), Network.local_username)
+	# tell the newly connected user about our username and to spawn our player locally
+	spawn_player.rpc_id(id, multiplayer.get_unique_id(), local_username)
 
 func _on_peer_disconnected(id: int):
 	
 	# forget their username
-	$CanvasLayer/Chat.deregister_id(id)
+	$CanvasLayer/Chat.send_message(id_to_username.get(id) + " left", true)
+	id_to_username.erase(id)
 	
 	# despawn their player locally
 	$Players.get_node("Player" + str(id)).queue_free()
@@ -66,7 +73,7 @@ func _on_connected_to_server():
 	$AwaitingServerMenu.queue_free()
 	
 	# spawn our player locally
-	spawn_player(multiplayer.get_unique_id(), Network.local_username)
+	spawn_player(multiplayer.get_unique_id(), local_username)
 
 func _on_connection_failed():
 	Network.leave_server("Server did not respond.")
