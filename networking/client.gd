@@ -24,9 +24,6 @@ func _ready() -> void:
 @rpc("any_peer", "call_local", "reliable", 0)
 func send_message(msg: String, is_system_msg: bool):
 	
-	if multiplayer.is_server():
-		return # the server needs a node to consume the RPC
-	
 	if is_system_msg:
 		$CanvasLayer/Chat/ChatMessages.text += "\n[color=yellow]" + msg + "[/color]"
 	else:
@@ -65,7 +62,9 @@ func _process(_delta: float) -> void:
 			$CanvasLayer/Chat/ChatEntry.grab_focus()
 
 @rpc("any_peer", "call_local", "reliable", 0)
-func spawn_player(id: int, username: String):
+func spawn_player(username: String):
+	
+	var id = multiplayer.get_remote_sender_id()
 	
 	# spawn player
 	var player = load("res://player/player.tscn").instantiate()
@@ -82,7 +81,7 @@ func spawn_player(id: int, username: String):
 func _on_peer_connected(id: int):
 	
 	# tell the newly connected user about our username and to spawn our player locally
-	spawn_player.rpc_id(id, multiplayer.get_unique_id(), local_username)
+	spawn_player.rpc_id(id, local_username)
 
 func _on_peer_disconnected(id: int):
 	
@@ -100,7 +99,7 @@ func _on_connected_to_server():
 	$AwaitingServerMenu.queue_free()
 	
 	# spawn our player locally
-	spawn_player(multiplayer.get_unique_id(), local_username)
+	spawn_player.rpc_id(multiplayer.get_unique_id(), local_username)
 
 func _on_connection_failed():
 	Network.leave_server("Server did not respond.")

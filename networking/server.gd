@@ -33,5 +33,5 @@ func send_message(_msg: String, _is_system_msg: bool):
 	pass
 
 @rpc("any_peer", "call_local", "reliable", 0)
-func spawn_player(_id: int, _username: String):
+func spawn_player(_username: String):
 	pass
