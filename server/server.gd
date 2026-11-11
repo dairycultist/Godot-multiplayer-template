@@ -22,10 +22,8 @@ func _enter_tree() -> void:
 func _on_peer_connected(_id: int):
 	pass
 
-func _on_peer_disconnected(id: int):
-	
-	# despawn their player locally
-	$Players.get_node("Player" + str(id)).queue_free()
+func _on_peer_disconnected(_id: int):
+	pass
 
 # need to consume RPCs clients send between each other even if we do nothing with them
 @rpc("any_peer", "call_local", "reliable", 0)

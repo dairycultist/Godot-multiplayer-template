@@ -1,6 +1,8 @@
 extends Node
 class_name Client
 
+@export var player_scene: PackedScene
+
 var _connected := false
 
 var local_username: String
@@ -67,7 +69,7 @@ func spawn_player(username: String):
 	var id = multiplayer.get_remote_sender_id()
 	
 	# spawn player
-	var player = load("res://player/player.tscn").instantiate()
+	var player = player_scene.instantiate()
 	player.name = "Player" + str(id)
 	player.player_id = id
 	player.player_username = username

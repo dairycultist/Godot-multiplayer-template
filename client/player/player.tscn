@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://d18s3cdq05uem"]
 
-[ext_resource type="Script" uid="uid://d17iudcyf5k2" path="res://player/player.gd" id="1_rkbax"]
+[ext_resource type="Script" uid="uid://d17iudcyf5k2" path="res://client/player/player.gd" id="1_rkbax"]
 [ext_resource type="Texture2D" uid="uid://diogyyvqcxvai" path="res://icon.svg" id="2_rkbax"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_rkbax"]
